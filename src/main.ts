@@ -15,7 +15,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -30,10 +29,10 @@ async function bootstrap() {
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Spotify Integration API')
-    .setDescription('API para integração com Spotify - Top Artists e Tracks')
+    .setDescription('API for Spotify Integration - Top Artists and Tracks')
     .setVersion('1.0')
-    .addTag('Auth', 'Endpoints de autenticação')
-    .addTag('Spotify', 'Endpoints de integração com Spotify')
+    .addTag('Auth', 'Authentication Endpoints')
+    .addTag('Spotify', 'Spotify Integration Endpoints')
     .addBearerAuth(
       {
         type: 'http',
@@ -43,21 +42,20 @@ async function bootstrap() {
         description: 'Enter Spotify Bearer token',
         in: 'header',
       },
-      'spotify-bearer', // Nome do esquema de segurança
+      'spotify-bearer',
     )
-    .addServer('http://127.0.0.1:3001', 'Development server')
+    .addServer('http://127.0.0.1:3000', 'Development server')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // Customize Swagger UI
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },
-    customSiteTitle: 'Spotify API Documentation',
+    customSiteTitle: 'Festify API Documentation',
     customfavIcon: '/favicon.ico',
     customCss: `
       .topbar-wrapper .link {
@@ -71,7 +69,6 @@ async function bootstrap() {
     `,
   });
 
-  // Health check endpoint
   app.getHttpAdapter().get('/health', (req, res) => {
     res.json({
       status: 'ok',
