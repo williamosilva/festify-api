@@ -26,7 +26,6 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Spotify Integration API')
     .setDescription('API for Spotify Integration - Top Artists and Tracks')
