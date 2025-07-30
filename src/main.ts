@@ -76,10 +76,9 @@ async function bootstrap() {
     });
   });
 
-  await app.listen(3001, '127.0.0.1');
-  console.log(`🚀 Application is running on: http://127.0.0.1:3001`);
-  console.log(`📚 Swagger documentation: http://127.0.0.1:3001/api/docs`);
-  console.log(`❤️  Health check: http://127.0.0.1:3001/health`);
+  const port = process.env.PORT || 3001;
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Application is running on: http://127.0.0.1:${port}`);
 }
 
 bootstrap();
