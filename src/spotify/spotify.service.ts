@@ -29,11 +29,10 @@ export class SpotifyService {
     userId?: string,
   ): Promise<SpotifyTopArtistsResponse | SpotifyTopTracksResponse> {
     try {
-      // Check cache first if userId is provided
       if (userId) {
         const cachedData = await this.getCachedData(userId, dto);
         if (cachedData) {
-          this.logger.log(`Returning cached data for user ${userId}`);
+          // this.logger.log(`Returning cached data for user ${userId}`);
           return cachedData.data;
         }
       }
@@ -45,7 +44,6 @@ export class SpotifyService {
         offset: dto.offset,
       };
 
-      // Garantir que o token tenha o prefixo "Bearer "
       const authToken = this.formatAuthToken(dto.authorization);
 
       const headers = {
@@ -53,10 +51,10 @@ export class SpotifyService {
         'Content-Type': 'application/json',
       };
 
-      this.logger.log(`Making request to Spotify API: ${url}`);
-      this.logger.debug(
-        `Authorization header: ${authToken.substring(0, 20)}...`,
-      );
+      // this.logger.log(`Making request to Spotify API: ${url}`);
+      // this.logger.debug(
+      //   `Authorization header: ${authToken.substring(0, 20)}...`,
+      // );
 
       const response = await firstValueFrom(
         this.httpService.get(url, { headers, params }),
@@ -64,7 +62,6 @@ export class SpotifyService {
 
       const data = response.data;
 
-      // Cache the response if userId is provided
       if (userId) {
         await this.cacheData(userId, dto, data);
       }
@@ -104,7 +101,6 @@ export class SpotifyService {
     }
   }
 
-  // Método para garantir que o token tenha o formato correto
   private formatAuthToken(authorization: string): string {
     if (!authorization) {
       throw new HttpException(
@@ -197,11 +193,6 @@ export class SpotifyService {
     }
   }
 
-  /**
-   * Processa a resposta original do Spotify e retorna 3 listas distribuídas
-   * @param originalResponse - Resposta original da API do Spotify
-   * @returns ProcessedArtistsResponse com 3 listas organizadas
-   */
   static processTopArtists(
     originalResponse: SpotifyTopArtistsResponse,
   ): ProcessedArtistsResponse {
@@ -215,26 +206,21 @@ export class SpotifyService {
       };
     }
 
-    // Ordenar artistas por popularidade (maior para menor)
     const sortedArtists = [...items].sort(
       (a, b) => b.popularity - a.popularity,
     );
 
-    // Pegar os 3 artistas com maior popularidade para serem líderes das listas
     const topThreeArtists = sortedArtists.slice(0, 3);
     const remainingArtists = sortedArtists.slice(3);
 
-    // Criar as 3 listas com seus respectivos líderes (primeiro na lista)
     const lists: ArtistsList[] = topThreeArtists.map((leadArtist, index) => ({
       id: index + 1,
       artists: [{ name: leadArtist.name, popularity: leadArtist.popularity }],
       averagePopularity: leadArtist.popularity,
     }));
 
-    // Distribuir os artistas restantes entre as 3 listas de forma balanceada
     this.distributeRemainingArtists(lists, remainingArtists);
 
-    // Calcular popularidade média de cada lista
     lists.forEach((list) => {
       const totalPopularity = list.artists.reduce(
         (sum, artist) => sum + artist.popularity,
@@ -252,18 +238,12 @@ export class SpotifyService {
     };
   }
 
-  /**
-   * Distribui os artistas restantes entre as 3 listas de forma balanceada
-   * @param lists - Array das 3 listas
-   * @param remainingArtists - Artistas restantes para distribuir
-   */
   private static distributeRemainingArtists(
     lists: ArtistsList[],
     remainingArtists: SpotifyArtist[],
   ) {
     let currentListIndex = 0;
 
-    // Distribuir os artistas restantes de forma circular entre as 3 listas
     remainingArtists.forEach((artist) => {
       lists[currentListIndex].artists.push({
         name: artist.name,
@@ -272,11 +252,7 @@ export class SpotifyService {
       currentListIndex = (currentListIndex + 1) % 3;
     });
   }
-  /**
-   * Valida se a resposta tem o formato esperado
-   * @param response - Resposta a ser validada
-   * @returns boolean indicando se é válida
-   */
+
   static validateResponse(
     response: any,
   ): response is SpotifyTopArtistsResponse {

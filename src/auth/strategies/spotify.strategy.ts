@@ -15,11 +15,7 @@ export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
       clientID: configService.get<string>('SPOTIFY_CLIENT_ID'),
       clientSecret: configService.get<string>('SPOTIFY_CLIENT_SECRET'),
       callbackURL: configService.get<string>('CALLBACK_URL'),
-      scope: [
-        'user-read-email',
-        'user-read-private',
-        'user-top-read', // ADICIONE ESTE SCOPE - é obrigatório para acessar top artists/tracks
-      ],
+      scope: ['user-read-email', 'user-read-private', 'user-top-read'],
     });
   }
 

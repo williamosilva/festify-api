@@ -41,12 +41,10 @@ export class AuthService {
 
   async validateToken(accessToken: string): Promise<TokenResponse> {
     try {
-      // 1. Verifica se o access token é válido
       const isAccessTokenValid =
         await this.spotifyTokenService.validateAccessToken(accessToken);
 
       if (isAccessTokenValid) {
-        // Token válido, busca o usuário
         const user = await this.userModel.findOne({ accessToken });
 
         if (user) {
@@ -63,13 +61,12 @@ export class AuthService {
         }
       }
 
-      // 2. Access token inválido, busca usuário pelo token para pegar o refresh token
       const user = await this.userModel.findOne({ accessToken });
 
       if (!user) {
         return {
           isValid: false,
-          error: 'Usuário não encontrado',
+          error: 'User not found',
         };
       }
 

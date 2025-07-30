@@ -46,7 +46,7 @@ export class SpotifyTokenService {
 
       return response.data;
     } catch (error) {
-      console.error('Erro ao renovar access token:', error.response?.data);
+      console.error('Error refreshing access token:', error.response?.data);
       return null;
     }
   }

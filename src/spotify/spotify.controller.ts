@@ -69,9 +69,6 @@ export class SpotifyController {
     @Headers('authorization') authorization?: string,
     @Req() req?: any,
   ): Promise<SpotifyTopArtistsResponse | SpotifyTopTracksResponse> {
-    // Log para debug
-    console.log('Authorization header received:', authorization);
-
     if (!authorization) {
       throw new BadRequestException('Authorization header is required');
     }
@@ -84,7 +81,6 @@ export class SpotifyController {
       authorization: authorization,
     };
 
-    // Extract userId from request if available (assuming you have authentication)
     const userId = req?.user?.id;
 
     return this.spotifyService.getTopItems(dto, userId);
@@ -92,7 +88,7 @@ export class SpotifyController {
 
   @Get('top/artists')
   @ApiOperation({ summary: 'Get user top artists from Spotify' })
-  @ApiBearerAuth('spotify-bearer') // Usando Bearer Auth
+  @ApiBearerAuth('spotify-bearer')
   @ApiQuery({
     name: 'time_range',
     enum: TimeRange,
@@ -129,11 +125,6 @@ export class SpotifyController {
     @Headers('authorization') authorization?: string,
     @Req() req?: any,
   ): Promise<SpotifyTopArtistsResponse> {
-    console.log(
-      'Authorization header received in getTopArtists:',
-      authorization,
-    );
-
     if (!authorization) {
       throw new BadRequestException('Authorization header is required');
     }
@@ -151,7 +142,7 @@ export class SpotifyController {
 
   @Get('top/tracks')
   @ApiOperation({ summary: 'Get user top tracks from Spotify' })
-  @ApiBearerAuth('spotify-bearer') // Usando Bearer Auth
+  @ApiBearerAuth('spotify-bearer')
   @ApiQuery({
     name: 'time_range',
     enum: TimeRange,
@@ -188,11 +179,6 @@ export class SpotifyController {
     @Headers('authorization') authorization?: string,
     @Req() req?: any,
   ): Promise<SpotifyTopTracksResponse> {
-    console.log(
-      'Authorization header received in getTopTracks:',
-      authorization,
-    );
-
     if (!authorization) {
       throw new BadRequestException('Authorization header is required');
     }
@@ -261,11 +247,6 @@ export class SpotifyController {
     @Headers('authorization') authorization?: string,
     @Req() req?: any,
   ): Promise<ProcessedArtistsResponse> {
-    console.log(
-      'Authorization header received in getTopArtistsProcessed:',
-      authorization,
-    );
-
     if (!authorization) {
       throw new BadRequestException('Authorization header is required');
     }
@@ -279,18 +260,15 @@ export class SpotifyController {
 
     const userId = req?.user?.id;
 
-    // Buscar dados originais do Spotify
     const originalResponse = await this.spotifyService.getTopArtists(
       dto,
       userId,
     );
 
-    // Validar resposta
     if (!SpotifyService.validateResponse(originalResponse)) {
       throw new BadRequestException('Invalid response format from Spotify API');
     }
 
-    // Processar e retornar as 3 listas
     return SpotifyService.processTopArtists(originalResponse);
   }
 }
