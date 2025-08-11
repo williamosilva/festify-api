@@ -32,6 +32,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Auth', 'Authentication Endpoints')
     .addTag('Spotify', 'Spotify Integration Endpoints')
+    .addTag('Health', 'Health Check Endpoints')
     .addBearerAuth(
       {
         type: 'http',
@@ -68,17 +69,10 @@ async function bootstrap() {
     `,
   });
 
-  app.getHttpAdapter().get('/health', (req, res) => {
-    res.json({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-    });
-  });
-
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
-  console.log(`🚀 Application is running on: http://127.0.0.1:${port}`);
+  // console.log(`🚀 Application is running on: http://127.0.0.1:${port}`);
+  // console.log(`⚡ Health check cron job started - pinging every 10 minutes`);
 }
 
 bootstrap();
