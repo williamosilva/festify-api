@@ -12,11 +12,11 @@ export class HealthService {
     const port = this.configService.get('PORT') || 3001;
     this.baseUrl =
       process.env.NODE_ENV === 'production'
-        ? this.configService.get('BACKEND_URL') || ``
+        ? this.configService.get('BACKEND_URL') || `https://localhost:3001`
         : `http://127.0.0.1:${port}`;
   }
 
-  @Cron('*/10 * * * *')
+  @Cron('*/1 * * * *')
   async pingSelf() {
     try {
       const startTime = Date.now();
