@@ -30,8 +30,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
-  // console.log(`🚀 Application is running on: http://127.0.0.1:${port}`);
-  // console.log(`⚡ Health check cron job started - pinging every 10 minutes`);
+
 }
 
 bootstrap();

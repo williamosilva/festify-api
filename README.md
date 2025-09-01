@@ -1,99 +1,272 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Festify API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS API for Spotify Web API integration. Allows Spotify authentication and fetching user's top artists/tracks.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## How to Run
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
+### 1. Clone the repository
 ```bash
-$ npm install
+git clone https://github.com/williamosilva/festify-api
+cd festify-api
 ```
 
-## Compile and run the project
+### 2. Configure environment variables
+Create a `.env` file:
 
-```bash
-# development
-$ npm run start
+```env
+# Spotify (required)
+SPOTIFY_CLIENT_ID=your_client_id_here
+SPOTIFY_CLIENT_SECRET=your_client_secret_here
+CALLBACK_URL=http://localhost:3001/auth/spotify/callback
 
-# watch mode
-$ npm run start:dev
+# Database (required)
+MONGO_URI=mongodb://localhost:27017/spotify-app
 
-# production mode
-$ npm run start:prod
+# URLs (required)
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:3001
+
+# Optional
+PORT=3001
+NODE_ENV=development
 ```
 
-## Run tests
-
+### 3. Run with Docker (Recommended)
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up --build
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+**OR** run with Node.js:
 ```bash
-$ npm install -g mau
-$ mau deploy
+npm install
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+API will be available at: http://localhost:3001
 
-## Resources
+## Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### Authentication
+- `GET /auth/spotify` - Redirects to Spotify OAuth authorization
+- `GET /auth/spotify/callback` - OAuth callback, redirects to frontend with tokens
+- `POST /auth/validate-token` - Validate access token
+- `POST /auth/logout` - Logout and invalidate tokens
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Spotify Data
+- `GET /spotify/top/:type` - Get top artists or tracks (type: `artists` or `tracks`)
+- `GET /spotify/top/artists` - Get user's top artists
+- `GET /spotify/top/tracks` - Get user's top tracks  
+- `GET /spotify/top/artists/processed` - Get artists distributed in 3 balanced lists
+- `DELETE /spotify/cache` - Clear user's cached data
 
-## Support
+### Query Parameters
+All Spotify endpoints support these optional parameters:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `time_range` | `short_term`, `medium_term`, `long_term` | `medium_term` | Time period for data |
+| `limit` | `1-50` | `39` | Number of items to return |
+| `offset` | `0+` | `0` | Starting index for pagination |
 
-## Stay in touch
+**Time Range Options:**
+- `short_term` - Last 4 weeks
+- `medium_term` - Last 6 months  
+- `long_term` - Several years of data
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Authentication
+Protected endpoints require the header:
+```
+Authorization: Bearer YOUR_TOKEN_HERE
+```
 
-## License
+## Response Examples
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Authentication Responses
+
+**POST /auth/validate-token**
+
+Request:
+```json
+{
+  "accessToken": "BQC4YW9tYXRpYzEyM..."
+}
+```
+
+Valid token response:
+```json
+{
+  "statusCode": 200,
+  "message": "Token is valid",
+  "data": {
+    "isValid": true,
+    "user": {
+      "id": "507f1f77bcf86cd799439011",
+      "spotifyId": "spotify_user_123",
+      "displayName": "John Doe",
+      "email": "john@example.com",
+      "profileImageUrl": "https://i.scdn.co/image/..."
+    }
+  }
+}
+```
+
+Token refresh response (when token expired but refresh successful):
+```json
+{
+  "statusCode": 200,
+  "message": "Token is valid",
+  "data": {
+    "isValid": true,
+    "newAccessToken": "BQC4YW9tYXRpYzEyM...",
+    "user": {
+      "id": "507f1f77bcf86cd799439011",
+      "spotifyId": "spotify_user_123",
+      "displayName": "John Doe",
+      "email": "john@example.com",
+      "profileImageUrl": "https://i.scdn.co/image/..."
+    }
+  }
+}
+```
+
+Invalid token response:
+```json
+{
+  "statusCode": 401,
+  "message": "User not found",
+  "data": {
+    "isValid": false,
+    "error": "User not found"
+  }
+}
+```
+
+**POST /auth/logout**
+
+Request:
+```json
+{
+  "accessToken": "BQC4YW9tYXRpYzEyM..."
+}
+```
+
+Response:
+```json
+{
+  "statusCode": 200,
+  "message": "Logout successful"
+}
+```
+
+### Top Artists Response
+```json
+{
+  "href": "https://api.spotify.com/v1/me/top/artists",
+  "items": [
+    {
+      "id": "4q3ewBCX7sLwd24euuV69X",
+      "name": "Bad Bunny",
+      "popularity": 100,
+      "genres": ["reggaeton", "trap latino"],
+      "images": [
+        {
+          "url": "https://i.scdn.co/image/...",
+          "height": 640,
+          "width": 640
+        }
+      ],
+      "followers": {
+        "total": 8000000
+      },
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/..."
+      }
+    }
+  ],
+  "limit": 20,
+  "offset": 0,
+  "total": 50
+}
+```
+
+### Processed Artists Response
+```json
+{
+  "lists": [
+    {
+      "id": 1,
+      "artists": [
+        {
+          "name": "Bad Bunny",
+          "popularity": 100
+        },
+        {
+          "name": "Drake",
+          "popularity": 95
+        }
+      ],
+      "averagePopularity": 97
+    }
+  ],
+  "originalTotal": 39,
+  "processedAt": "2025-01-01T12:00:00Z"
+}
+```
+
+## Usage Examples
+
+### Authentication Flow
+```bash
+# 1. Start OAuth flow (redirects to Spotify)
+curl http://localhost:3001/auth/spotify
+
+# 2. After user authorizes, callback redirects to:
+# http://localhost:3000/login-success?access=TOKEN&refresh=REFRESH_TOKEN
+
+# 3. Validate token
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"accessToken":"YOUR_TOKEN"}' \
+     http://localhost:3001/auth/validate-token
+
+# 4. Logout
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"accessToken":"YOUR_TOKEN"}' \
+     http://localhost:3001/auth/logout
+```
+
+### Spotify Data
+```bash
+# Get top artists for last 4 weeks
+curl -H "Authorization: Bearer TOKEN" \
+     "http://localhost:3001/spotify/top/artists?time_range=short_term&limit=20"
+
+# Get top tracks
+curl -H "Authorization: Bearer TOKEN" \
+     "http://localhost:3001/spotify/top/tracks?limit=10"
+
+# Get processed artists (distributed in 3 lists)
+curl -H "Authorization: Bearer TOKEN" \
+     "http://localhost:3001/spotify/top/artists/processed"
+
+# Clear user cache
+curl -X DELETE -H "Authorization: Bearer TOKEN" \
+     http://localhost:3001/spotify/cache
+```
+
+## Frontend (Optional)
+For the complete interface, also clone:
+```bash
+git clone https://github.com/williamosilva/festify-frontend
+cd festify-frontend
+npm install && npm run dev
+```
+
+## Requirements
+- Node.js 20+ (if not using Docker)
+- MongoDB running
+- Spotify Developer account
+
+## Author
+
+**William Silva**  
+[GitHub](https://github.com/williamosilva)

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: ${BUILD_TARGET:-development}
+    container_name: festify-app
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/app  
+      - /app/node_modules 
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=3001
+      - MONGO_URI=${MONGO_URI} 
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - CALLBACK_URL=${CALLBACK_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+    restart: unless-stopped
