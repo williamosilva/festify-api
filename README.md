@@ -29,6 +29,7 @@ BACKEND_URL=http://localhost:3001
 # Optional
 PORT=3001
 NODE_ENV=development
+BUILD_TARGET=development
 ```
 
 ### 3. Run with Docker (Recommended)
