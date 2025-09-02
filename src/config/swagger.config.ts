@@ -3,24 +3,29 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('Spotify Integration API')
-    .setDescription('API for Spotify Integration - Top Artists and Tracks')
+    .setTitle('Festify API')
+    .setDescription(
+      'The Festify API connects to Spotify to transform your listening history into unique festival lineups. ' +
+        'Discover your top artists, customize visual styles, and generate immersive posters that celebrate your musical journey.',
+    )
     .setVersion('1.0')
-    .addTag('Auth', 'Authentication Endpoints')
-    .addTag('Spotify', 'Spotify Integration Endpoints')
-    .addTag('Health', 'Health Check Endpoints')
+    .addTag('Auth', 'Authentication endpoints with Spotify')
+    .addTag(
+      'Spotify',
+      'Integration with artists, tracks, and playlists from Spotify',
+    )
+    .addTag('Health', 'API health monitoring endpoints')
     .addBearerAuth(
       {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'Token',
         name: 'Authorization',
-        description: 'Enter Spotify Bearer token',
+        description: 'Enter your Spotify Bearer token',
         in: 'header',
       },
       'spotify-bearer',
     )
-    .addServer('http://127.0.0.1:3000', 'Development server')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -32,13 +37,8 @@ export function setupSwagger(app: INestApplication): void {
       operationsSorter: 'alpha',
     },
     customSiteTitle: 'Festify API Documentation',
-    customfavIcon: '/favicon.ico',
     customCss: `
-      .topbar-wrapper .link {
-        content: url('https://open.spotify.com/favicon.ico');
-        width: 40px;
-        height: 40px;
-      }
+    
       .swagger-ui .topbar {
          background-color: #1DB954;
        }
