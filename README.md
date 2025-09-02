@@ -270,4 +270,4 @@ npm install && npm run dev
 ## Author
 
 **William Silva**  
-[GitHub](https://github.com/williamosilva)
+[Website](https://williamsilva.dev)
