@@ -12,7 +12,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
-import { TokenValidationDto } from './dto/token-validation.dto';
 import { AuthService } from './services/auth.service';
 
 @Controller('auth')
@@ -38,10 +37,8 @@ export class AuthController {
   }
 
   @Post('validate-token')
-  async validateToken(@Body() tokenValidationDto: TokenValidationDto) {
-    const result = await this.authService.validateToken(
-      tokenValidationDto.accessToken,
-    );
+  async validateToken(@Body('accessToken') accessToken: string) {
+    const result = await this.authService.validateToken(accessToken);
 
     if (result.isValid) {
       return {
@@ -59,8 +56,8 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Body() tokenValidationDto: TokenValidationDto) {
-    await this.authService.logout(tokenValidationDto.accessToken);
+  async logout(@Body('accessToken') accessToken: string) {
+    await this.authService.logout(accessToken);
     return {
       statusCode: HttpStatus.OK,
       message: 'Logout successful',
