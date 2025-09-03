@@ -70,7 +70,6 @@ export class AuthService {
         };
       }
 
-      // 3. Tenta renovar o access token usando o refresh token
       const newTokens = await this.spotifyTokenService.refreshAccessToken(
         user.refreshToken,
       );
@@ -78,18 +77,16 @@ export class AuthService {
       if (!newTokens) {
         return {
           isValid: false,
-          error: 'Refresh token inválido',
+          error: 'Invalid refresh token',
         };
       }
 
-      // 4. Atualiza os tokens no banco de dados
       user.accessToken = newTokens.access_token;
       if (newTokens.refresh_token) {
         user.refreshToken = newTokens.refresh_token;
       }
       await user.save();
 
-      // 5. Retorna o novo access token
       return {
         isValid: true,
         newAccessToken: newTokens.access_token,
@@ -102,17 +99,16 @@ export class AuthService {
         },
       };
     } catch (error) {
-      console.error('Erro na validação do token:', error);
+      console.error('Error validating token:', error);
       return {
         isValid: false,
-        error: 'Erro interno do servidor',
+        error: 'Internal server error',
       };
     }
   }
 
   async logout(accessToken: string): Promise<void> {
     try {
-      // Remove os tokens do usuário no banco
       await this.userModel.updateOne(
         { accessToken },
         {
@@ -123,7 +119,7 @@ export class AuthService {
         },
       );
     } catch (error) {
-      console.error('Erro ao fazer logout:', error);
+      console.error('Error logging out:', error);
     }
   }
 }
